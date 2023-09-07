@@ -1,0 +1,701 @@
+﻿<krpano version="1.20" title="Sempre Moscow">
+
+	<include url="skin/vtourskin.xml" />
+	<include url="hotspots.xml" />
+	<include url="actions.xml" />
+	<include url="plugins/iphone_fullscreen_swipe.xml" />
+	<autorotate enabled="true" waittime="2.5" speed="2.5"  />
+
+	<!--
+	    For an alternative skin design either change the <skin_settings> values 
+	    from above or optionally include one of the predefined designs from below.
+	-->
+	<!--<include url="skin/vtourskin_design_flat_light.xml"  /> -->
+	<!-- <include url="skin/vtourskin_design_glass.xml"       /> -->
+	 <include url="skin/vtourskin_design_ultra_light.xml" /> 
+	<!-- <include url="skin/vtourskin_design_117.xml"         /> -->
+	<!-- <include url="skin/vtourskin_design_117round.xml"    /> -->
+	<!-- <include url="skin/vtourskin_design_black.xml"       /> -->
+
+<action name="get_coordinates">
+screentosphere(mouse.x, mouse.y, toh, tov); roundval(toh, 2); roundval(tov, 2); txtadd(txt, 'ath="', get(toh), '" atv="', get(tov), '"'); copy(plugin[clipboard].text, txt); trace('ath=', toh, ' atv=', tov); copy(hotspot[testspot].ath, toh); copy(hotspot[testspot].atv, tov); //set(hotspot[testspot].visible, true); //trace(px, ' ', py);
+</action>
+
+<events name="coordinates" onmousedown="get_coordinates();" keep="true"/>
+
+	<!-- startup action - load the first scene -->
+
+<action name="startup" autorun="onstart">
+set(prev_name, null); if(startscene === null OR !scene[get(startscene)], copy(startscene, scene[0].name); ); loadscene(get(startscene), null, MERGE);   set(info_visible, false);  set(contur_visible, false); callwith(layer[icons_button], icons_button_click());  //create_watermarks(); 
+</action>
+
+
+<action name="new_scene">
+set(layer[icons_button].visible, calc(scene[get(xml.scene)].index == 0 ? true : false)); 
+
+</action>
+
+<!--
+<action name="create_watermarks">
+for (set(i, 1), i LT 25, inc(i), txtadd(layer_name, 'wm', get(i)); addhotspot(get(layer_name)); hotspot[get(layer_name)].loadstyle('watermark'); ); refresh_watermarks();
+</action>
+
+<action name="refresh_watermarks">
+for (set(i, 1), i LT 25, inc(i), txtadd(layer_name, 'wm', get(i)); mul(scale, random, 0.2); add(scale, 0.1); copy(hotspot[get(layer_name)].scale, scale); mul(alpha, random, 0.25); add(alpha, 0.1); copy(hotspot[get(layer_name)].alpha, scale); mul(h, random, 360); copy(hotspot[get(layer_name)].ath, h); mul(v, random, 160); sub(v, 80); copy(hotspot[get(layer_name)].atv, v); mul(r, random, 90); sub(r, 45); copy(hotspot[get(layer_name)].rotate, r); ); //delayedcall(1.5, refresh_watermarks(); );
+</action>
+
+<style name="watermark" url="i/watermark.png" edge="center" enabled="false" distorted="true" keep="true"/>
+-->
+
+	<plugin name="pp_blur" keep="true"
+		url="plugins/pp_blur.js"
+		enabled="true"
+		range="0.0"
+		linearrgb="false"
+		order="1"
+		phase="2"
+		/>
+
+	<action name="circlepos" scope="localonly" args="pos, total">
+		calc(caller.ox, -100 * cos((pos-1)/total * Math.PI * 2.0) );
+		calc(caller.oy, -100 * sin((pos-1)/total * Math.PI * 2.0) );
+	</action>
+
+<events onxmlcomplete="" onnewscene="info_visibility1"/>
+
+<action name="icons_button_click">
+toggle(flag); txtadd(cr, calc(flag ? 32 : 0), '|0|32|32'); copy(layer[icons_button_checkbox].crop, cr); info_visibility(get(flag));
+</action>
+
+
+<action name="info_visibility">
+for (set(i,0), i LT hotspot.count, inc(i), indexoftxt(index, get(hotspot[get(i)].style), 'table2'); 
+
+if (index GT -1, set(hotspot[get(i)].visible, %1););
+
+);
+
+set(info_visible, %1); trace(info_visible);
+
+</action>
+
+<action name="info_visibility1">
+for (set(i,0), i LT hotspot.count, inc(i), indexoftxt(index, get(hotspot[get(i)].style), 'table2'); 
+if (index GT -1, copy(hotspot[get(i)].visible, info_visible););
+);
+</action>
+
+<style name="table2" url="i/pin.png" edge="bottom" scale="0.7" scale.mobile="0.5" tooltip="" distorted="false" onclick="" onloaded="" keep="false"/>
+
+<style name="childtext" distorted="false" ox="0" oy="-22" ox.mobile="0" oy.mobile="-15"  css="text-align:center; color:#FFFFFF; font-weight:bold;font-size:16px;" css.mobile="text-align:center; color:#FFFFFF; font-weight:bold;font-size:12px;" txtshadow="0 0 3 0x000000 1" capture="true" bgalpha="0" bgborder="0" backgroundcolor="0xFFFFFF" align="center" onloaded="" onclick=""/>
+<!--
+<layer name="icons_button" type="text" align="leftttop" x="10" y.normal="10" y.mobile="10" autowidth="auto" autoheight="auto" html="Онлайн-бронирование" background="true" backgroundcolor="0x222222" backgroundalpha="0.8" padding.normal="8 12 8 32" padding.mobile="4 6 4 16" roundedge="4" css.normal="font-family:Arial; font-size:14px; color:#FFFFFF;" css.mobile="font-family:Arial; font-size:10px; color:#FFFFFF;" onover="set(backgroundcolor, '0x333333');" onout="set(backgroundcolor, '0x222222');" onclick="icons_button_click()" keep="true" flag="true" zorder="0"/>
+-->
+<!-- <layer name="icons_button" type="text" align="leftttop" x="10" y.normal="10" y.mobile="10" autowidth="auto" autoheight="auto" html="Онлайн-бронирование" background="true" backgroundcolor="0x222222" backgroundalpha="0.8" padding.normal="8 12 8 32" padding.mobile="4 6 4 16" roundedge="4" css.normal="font-family:Arial; font-size:14px; color:#FFFFFF; display:none;" css.mobile="font-family:Arial; font-size:10px; color:#FFFFFF; display:none;" onover="set(backgroundcolor, '0x333333');" onout="set(backgroundcolor, '0x222222');" onclick="icons_button_click()" keep="true" flag="false" zorder="0" onloaded=""/> -->
+
+<!--
+<layer name="icons_button_checkbox" url="i/checkbox.png" parent="icons_button" align="left" crop="32|0|32|32" width="16" height="16" x.normal="8" x.mobile="5" y.normal="0" y.mobile="-1" scale.mobile="0.5" enabled="false" keep="true"/>
+-->
+<!-- <layer  name="icons_button_checkbox" url="i/checkbox.png" parent="icons_button" align="left" crop="0|0|32|32" width="16" height="16" x.normal="8" x.mobile="5" y.normal="0" y.mobile="-1" scale.mobile="0.5" enabled="false" keep="true"/> -->
+
+<scene name="scene_002-recept" title="Вход" onstart="" thumburl="panos/002-recept.tiles/thumb.jpg" lat="" lng="" heading="">
+
+		<view hlookat="84.096" vlookat="-1.900" fovtype="MFOV" fov="120.000" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/002-recept.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/002-recept.tiles/pano_%s.jpg" />
+			<cube url="panos/002-recept.tiles/mobile/pano_%s.jpg" devices="mobile" />
+		</image>
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="66.702" atv="4.782" linkedscene="scene_004-zal1" />
+		<hotspot name="spot2" style="skin_hotspotstyle" ath="-27.972" atv="9.335" linkedscene="scene_001-street" />
+		<hotspot name="spot3" style="skin_hotspotstyle" ath="172.660" atv="0.029" linkedscene="scene_003-bar" />
+
+<!-- TABLES -->
+
+<!-- table 406 -->
+<hotspot name="table406" style="table2" ath="148.41" atv="24.77" children="true" linkedscene="" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=406, 501, 605, false);" onloaded="copy(hotspot[get(name)].visible, info_visible);"/>
+
+<layer name="num406" style="childtext" parent="hotspot[table406]" type="text"  html="406" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=406, 501, 605, false);"/>
+
+<!-- table 405-->
+<hotspot name="table405" style="table2" ath="116.92" atv="20.98" children="true" linkedscene="" />
+<layer name="num405" style="childtext" parent="hotspot[table405]" type="text"  html="405" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=405, 501, 605, false);"/>
+
+<!-- table 404-->
+<hotspot name="table404" style="table2" ath="97.76" atv="15.81" children="true" linkedscene="" />
+<layer name="num404" style="childtext" parent="hotspot[table404]" type="text"  html="404" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=404, 501, 605, false);"/>
+
+<!-- table 403-->
+<hotspot name="table403" style="table2" ath="88.23" atv="11.96" children="true" linkedscene="" />
+<layer name="num403" style="childtext" parent="hotspot[table403]" type="text"  html="403" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=403, 501, 605, false);"/>
+
+<!-- table 402-->
+<hotspot name="table402" style="table2" ath="82.65" atv="9.48" children="true" linkedscene="" />
+<layer name="num402" style="childtext" parent="hotspot[table402]" type="text"  html="402" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=402, 501, 605, false);"/>
+
+<!-- table 401-->
+<hotspot name="table401" style="table2" ath="76.39" atv="7.04" children="true" linkedscene="" />
+<layer name="num401" style="childtext" parent="hotspot[table401]" type="text"  html="401" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=401, 501, 605, false);"/>
+
+<!-- table 504-->
+<hotspot name="table504" style="table2" ath="46" atv="15" children="true" linkedscene="" />
+<layer name="num504" style="childtext" parent="hotspot[table504]" type="text"  html="504" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=504, 501, 605, false);"/>
+
+<!-- table 503-->
+<hotspot name="table503" style="table2" ath="49" atv="11" children="true" linkedscene="" />
+<layer name="num503" style="childtext" parent="hotspot[table503]" type="text"  html="503" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=503, 501, 605, false);"/>
+
+<!-- table 502-->
+<hotspot name="table502" style="table2" ath="53" atv="10" children="true" linkedscene="" />
+<layer name="num502" style="childtext" parent="hotspot[table502]" type="text"  html="502" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=502, 501, 605, false);"/>
+
+<!-- table 501-->
+<hotspot name="table501" style="table2" ath="56" atv="8" children="true" linkedscene="" />
+<layer name="num501" style="childtext" parent="hotspot[table501]" type="text"  html="501" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=501, 501, 605, false);"/>
+
+<!-- table 413-->
+<hotspot name="table413" style="table2" ath="-172" atv="7.5" children="true" linkedscene="" />
+<layer name="num413" style="childtext" parent="hotspot[table413]" type="text"  html="413" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=413, 501, 605, false);"/>
+
+<!-- table 412-->
+<hotspot name="table412" style="table2" ath="-168" atv="10" children="true" linkedscene="" />
+<layer name="num412" style="childtext" parent="hotspot[table412]" type="text"  html="412" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=412, 501, 605, false);"/>
+
+<!-- table 101-->
+<hotspot name="table101" style="table2" ath="-163" atv="8" children="true" linkedscene="" />
+<layer name="num101" style="childtext" parent="hotspot[table101]" type="text"  html="101" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=101, 501, 605, false);"/>
+
+
+<!-- table 411-->
+<hotspot name="table411" visible="true" style="table2" ath="-159" atv="12" children="true" linkedscene=""/>
+<layer name="num411" style="childtext" parent="hotspot[table411]" type="text"  html="411" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=411, 501, 605, false);"/>
+
+<!-- table 102-->
+<hotspot name="table102" visible="true" style="table2" ath="-155" atv="9" children="true" linkedscene=""/>
+<layer name="num102" style="childtext" parent="hotspot[table102]" type="text"  html="102" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=102, 501, 605, false);"/>
+
+<!-- table 103-->
+<hotspot name="table103" visible="true" style="table2" ath="-146" atv="10" children="true" linkedscene=""/>
+<layer name="num103" style="childtext" parent="hotspot[table103]" type="text"  html="103" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=103, 501, 605, false);"/>
+
+<!-- table 110-->
+<hotspot name="table110" visible="true" style="table2" ath="-153" atv="13.42" children="true" linkedscene=""/>
+<layer name="num110" style="childtext" parent="hotspot[table110]" type="text"  html="110" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=110, 501, 605, false);"/>
+
+<!-- table 109-->
+<hotspot name="table109" visible="true" style="table2" ath="-143" atv="15" children="true" linkedscene=""/>
+<layer name="num109" style="childtext" parent="hotspot[table109]" type="text"  html="109" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=109, 501, 605, false);"/>
+
+<!-- table 104-->
+<hotspot name="table104" visible="true" style="table2" ath="-137.22" atv="10.97" children="true" linkedscene=""/>
+<layer name="num104" style="childtext" parent="hotspot[table104]" type="text"  html="104" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=104, 501, 605, false);"/>
+
+<!-- table 108-->
+<hotspot name="table108" visible="true" style="table2" ath="-132.2" atv="15.99" children="true" linkedscene=""/>
+<layer name="num108" style="childtext" parent="hotspot[table108]" type="text"  html="108" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=108, 501, 605, false);"/>
+
+<!-- table 105-->
+<hotspot name="table105" visible="true" style="table2" ath="-126.62" atv="11.53" children="true" linkedscene=""/>
+<layer name="num105" style="childtext" parent="hotspot[table105]" type="text"  html="105" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=105, 501, 605, false);"/>
+
+<!-- table 107-->
+<hotspot name="table107" visible="true" style="table2" ath="-114.65" atv="15.65" children="true" linkedscene=""/>
+<layer name="num107" style="childtext" parent="hotspot[table107]" type="text"  html="107" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=107, 501, 605, false);"/>
+
+<!-- table 106-->
+<hotspot name="table106" visible="true" style="table2" ath="-109.17" atv="11.62" children="true" linkedscene=""/>
+<layer name="num106" style="childtext" parent="hotspot[table106]" type="text"  html="106" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=106, 501, 605, false);"/>
+
+<!-- table 206-->
+<hotspot name="table206" visible="true" style="table2" ath="22.54" atv="5.28" children="true" linkedscene=""/>
+<layer name="num206" style="childtext" parent="hotspot[table206]" type="text"  html="206" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=206, 501, 605, false);"/>
+
+<!-- table 205-->
+<hotspot name="table205" visible="true" style="table2" ath="25.74" atv="4.92" children="true" linkedscene=""/>
+<layer name="num205" style="childtext" parent="hotspot[table205]" type="text"  html="205" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=205, 501, 605, false);"/>
+
+<!-- table 204-->
+<hotspot name="table204" visible="true" style="table2" ath="29.34" atv="4.62" children="true" linkedscene=""/>
+<layer name="num204" style="childtext" parent="hotspot[table204]" type="text"  html="204" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=204, 501, 605, false);"/>
+
+<!-- table 203-->
+<hotspot name="table203" visible="true" style="table2" ath="32.4" atv="4.25" children="true" linkedscene=""/>
+<layer name="num203" style="childtext" parent="hotspot[table203]" type="text"  html="203" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=203, 501, 605, false);"/>
+
+<!-- table 202-->
+<hotspot name="table202" visible="true" style="table2" ath="35.12" atv="3.71" children="true" linkedscene=""/>
+<layer name="num202" style="childtext" parent="hotspot[table202]" type="text"  html="202" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=202, 501, 605, false);"/>
+
+<!-- table 201-->
+<hotspot name="table201" visible="true" style="table2" ath="38.2" atv="3.3" children="true" linkedscene=""/>
+<layer name="num201" style="childtext" parent="hotspot[table201]" type="text"  html="201" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=201, 501, 605, false);"/>
+
+	</scene>
+
+	
+	<scene name="scene_001-street" title="Вход с улицы" onstart="" thumburl="panos/001-street.tiles/thumb.jpg" lat="" lng="" heading="">
+
+		<view hlookat="-128.554" vlookat="-5.077" fovtype="MFOV" fov="120.000" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/001-street.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/001-street.tiles/pano_%s.jpg" />
+			<cube url="panos/001-street.tiles/mobile/pano_%s.jpg" devices="mobile" />
+		</image>
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="-128.990" atv="-4.643" linkedscene="scene_002-recept" />
+
+	</scene>
+
+	
+
+	<scene name="scene_003-bar" title="Бар" onstart="" thumburl="panos/003-bar.tiles/thumb.jpg" lat="" lng="" heading="">
+
+		<view hlookat="-11.717" vlookat="-0.217" fovtype="MFOV" fov="110.000" maxpixelzoom="1" fovmin="90" fovmax="120" limitview="auto" />
+
+		<preview url="panos/003-bar.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/003-bar.tiles/pano_%s.jpg" />
+			<cube url="panos/003-bar.tiles/mobile/pano_%s.jpg" devices="mobile" />
+		</image>
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="-175.534" atv="-1.679" linkedscene="scene_002-recept" />
+		<hotspot name="spot2" style="skin_hotspotstyle" ath="-12.019" atv="2.005" linkedscene="scene_005-hall" />
+
+<!-- table 413-->
+<hotspot name="table413" style="table2" ath="142.81" atv="24.63" children="true" linkedscene="" />
+<layer name="num413" style="childtext" parent="hotspot[table413]" type="text"  html="413" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=413, 501, 605, false);"/>
+
+<!-- table 412-->
+<hotspot name="table412" style="table2" ath="155.7" atv="20.96" children="true" linkedscene="" />
+<layer name="num412" style="childtext" parent="hotspot[table412]" type="text"  html="412" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=412, 501, 605, false);"/>
+
+<!-- table 101-->
+<hotspot name="table101" style="table2" ath="138.23" atv="17.52" children="true" linkedscene="" />
+<layer name="num101" style="childtext" parent="hotspot[table101]" type="text"  html="101" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=101, 501, 605, false);"/>
+
+<!-- table 502-->
+<hotspot name="table502" style="table2" ath="-141.44" atv="5.19" children="true" linkedscene="" />
+<layer name="num502" style="childtext" parent="hotspot[table502]" type="text"  html="502" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=502, 501, 605, false);"/>
+
+<!-- table 501-->
+<hotspot name="table501" style="table2" ath="-136.94" atv="4.81" children="true" linkedscene="" />
+<layer name="num501" style="childtext" parent="hotspot[table501]" type="text"  html="501" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=501, 501, 605, false);"/>
+
+<!-- table 504-->
+<hotspot name="table504" style="table2" ath="-152.45" atv="6.55" children="true" linkedscene="" />
+<layer name="num504" style="childtext" parent="hotspot[table504]" type="text"  html="504" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=504, 501, 605, false);"/>
+
+<!-- table 503-->
+<hotspot name="table503" style="table2" ath="-146.64" atv="5.89" children="true" linkedscene="" />
+<layer name="num503" style="childtext" parent="hotspot[table503]" type="text"  html="503" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=503, 501, 605, false);"/>
+
+<!-- table 4008 -->
+<hotspot name="table4008" style="table2" ath="140.58" atv="3.8" children="true" linkedscene="" />
+<layer name="num4008" style="childtext" parent="hotspot[table4008]" type="text"  html="4008" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=4008, 501, 605, false);"/>
+
+<!-- table 4007 -->
+<hotspot name="table4007" style="table2" ath="135.8" atv="4.77" children="true" linkedscene="" />
+<layer name="num4007" style="childtext" parent="hotspot[table4007]" type="text"  html="4007" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=4007, 501, 605, false);"/>
+
+<!-- table 4006 -->
+<hotspot name="table4006" style="table2" ath="131.51" atv="5.47" children="true" linkedscene="" />
+<layer name="num4006" style="childtext" parent="hotspot[table4006]" type="text"  html="4006" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=4006, 501, 605, false);"/>
+
+<!-- table 4005 -->
+<hotspot name="table4005" style="table2" ath="125.43" atv="6.3" children="true" linkedscene="" />
+<layer name="num4005" style="childtext" parent="hotspot[table4005]" type="text"  html="4005" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=4005, 501, 605, false);"/>
+
+<!-- table 4004 -->
+<hotspot name="table4004" style="table2" ath="117.93" atv="7.7" children="true" linkedscene="" />
+<layer name="num4004" style="childtext" parent="hotspot[table4004]" type="text"  html="4004" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=4004, 501, 605, false);"/>
+
+<!-- table 4003 -->
+<hotspot name="table4003" style="table2" ath="111.17" atv="8.75" children="true" linkedscene="" />
+<layer name="num4003" style="childtext" parent="hotspot[table4003]" type="text"  html="4003" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=4003, 501, 605, false);"/>
+
+<!-- table 4002 -->
+<hotspot name="table4002" style="table2" ath="46.63" atv="12.08" children="true" linkedscene="" />
+<layer name="num4002" style="childtext" parent="hotspot[table4002]" type="text"  html="4002" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=4002, 501, 605, false);"/>
+
+<!-- table 4001 -->
+<hotspot name="table4001" style="table2" ath="36.63" atv="10.56" children="true" linkedscene="" />
+<layer name="num4001" style="childtext" parent="hotspot[table4001]" type="text"  html="4001" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=4001, 501, 605, false);"/>
+
+<!-- table 3000 -->
+<hotspot name="table3000" style="table2" ath="-35.09" atv="10.56" children="true" linkedscene="" />
+<layer name="num3000" style="childtext" parent="hotspot[table3000]" type="text"  html="3000" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=3000, 501, 605, false);"/>
+
+	</scene>
+
+	<scene name="scene_004-zal1" title="Зал 1" onstart="" thumburl="panos/004-zal1.tiles/thumb.jpg" lat="" lng="" heading="">
+
+		<view hlookat="-129.040" vlookat="-0.792" fovtype="MFOV" fov="120.000" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/004-zal1.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/004-zal1.tiles/pano_%s.jpg" />
+			<cube url="panos/004-zal1.tiles/mobile/pano_%s.jpg" devices="mobile" />
+		</image>
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="33.345" atv="11.923" linkedscene="scene_002-recept" />
+
+<!-- table 501-->
+<hotspot name="table501" style="table2" ath="151" atv="26" children="true" linkedscene="" />
+<layer name="num501" style="childtext" parent="hotspot[table501]" type="text"  html="501" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=501, 501, 605, false);"/>
+
+<!-- table 502-->
+<hotspot name="table502" style="table2" ath="113" atv="29" children="true" linkedscene="" />
+<layer name="num502" style="childtext" parent="hotspot[table502]" type="text"  html="502" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=502, 501, 605, false);"/>
+
+<!-- table 503-->
+<hotspot name="table503" style="table2" ath="76.5" atv="23.46" children="true" linkedscene="" />
+<layer name="num503" style="childtext" parent="hotspot[table503]" type="text"  html="503" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=503, 501, 605, false);"/>
+
+<!-- table 504-->
+<hotspot name="table504" style="table2" ath="59.17" atv="15.89" children="true" linkedscene="" />
+<layer name="num504" style="childtext" parent="hotspot[table504]" type="text"  html="504" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=504, 501, 605, false);"/>
+
+<!-- table 206-->
+<hotspot name="table206" style="table2" ath="91.3" atv="5.4" children="true" linkedscene="" />
+<layer name="num206" style="childtext" parent="hotspot[table206]" type="text"  html="206" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=206, 501, 605, false);"/>
+
+<!-- table 205-->
+<hotspot name="table205" visible="true" style="table2" ath="100.96" atv="6.27" children="true" linkedscene=""/>
+<layer name="num205" style="childtext" parent="hotspot[table205]" type="text"  html="205" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=205, 501, 605, false);"/>
+
+<!-- table 204-->
+<hotspot name="table204" visible="true" style="table2" ath="112.1" atv="6.3" children="true" linkedscene=""/>
+<layer name="num204" style="childtext" parent="hotspot[table204]" type="text"  html="204" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=204, 501, 605, false);"/>
+
+<!-- table 203-->
+<hotspot name="table203" visible="true" style="table2" ath="123.76" atv="6.5" children="true" linkedscene=""/>
+<layer name="num203" style="childtext" parent="hotspot[table203]" type="text"  html="203" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=203, 501, 605, false);"/>
+
+<!-- table 202-->
+<hotspot name="table202" visible="true" style="table2" ath="133.55" atv="6.5" children="true" linkedscene=""/>
+<layer name="num202" style="childtext" parent="hotspot[table202]" type="text"  html="202" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=202, 501, 605, false);"/>
+
+<!-- table 201-->
+<hotspot name="table201" visible="true" style="table2" ath="141" atv="6.12" children="true" linkedscene=""/>
+<layer name="num201" style="childtext" parent="hotspot[table201]" type="text"  html="201" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=201, 501, 605, false);"/>
+
+<!-- table 406 -->
+<hotspot name="table406" style="table2" ath="-101.98" atv="29.24" children="true" linkedscene="" />
+<layer name="num406" style="childtext" parent="hotspot[table406]" type="text"  html="406" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=406, 501, 605, false);"/>
+
+<!-- table 405-->
+<hotspot name="table405" style="table2" ath="-53.12" atv="37.66" children="true" linkedscene="" />
+<layer name="num405" style="childtext" parent="hotspot[table405]" type="text"  html="405" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=405, 501, 605, false);"/>
+
+<!-- table 404-->
+<hotspot name="table404" style="table2" ath="-11.64" atv="26.41" children="true" linkedscene="" />
+<layer name="num404" style="childtext" parent="hotspot[table404]" type="text"  html="404" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=404, 501, 605, false);"/>
+
+<!-- table 403-->
+<hotspot name="table403" style="table2" ath="3.07" atv="19.25" children="true" linkedscene="" />
+<layer name="num403" style="childtext" parent="hotspot[table403]" type="text"  html="403" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=403, 501, 605, false);"/>
+
+<!-- table 402-->
+<hotspot name="table402" style="table2" ath="13.07" atv="12.45" children="true" linkedscene="" />
+<layer name="num402" style="childtext" parent="hotspot[table402]" type="text"  html="402" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=402, 501, 605, false);"/>
+
+<!-- table 401-->
+<hotspot name="table401" style="table2" ath="16.93" atv="9.85" children="true" linkedscene="" />
+<layer name="num401" style="childtext" parent="hotspot[table401]" type="text"  html="401" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=401, 501, 605, false);"/>
+
+<!-- table 301-->
+<hotspot name="table301" style="table2" ath="164.11" atv="5.91" children="true" linkedscene="" />
+<layer name="num301" style="childtext" parent="hotspot[table301]" type="text"  html="301" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=301, 501, 605, false);"/>
+
+<!-- table 302-->
+<hotspot name="table302" style="table2" ath="-162.6" atv="4.13" children="true" linkedscene="" />
+<layer name="num302" style="childtext" parent="hotspot[table302]" type="text"  html="302" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=302, 501, 605, false);"/>
+
+<!-- table 303-->
+<hotspot name="table303" style="table2" ath="-135.3" atv="4.1" children="true" linkedscene="" />
+<layer name="num303" style="childtext" parent="hotspot[table303]" type="text"  html="303" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=303, 501, 605, false);"/>
+
+<!-- table 304-->
+<hotspot name="table304" style="table2" ath="-107" atv="3.6" children="true" linkedscene="" />
+<layer name="num304" style="childtext" parent="hotspot[table304]" type="text"  html="304" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=304, 501, 605, false);"/>
+
+<!-- table 305-->
+<hotspot name="table305" style="table2" ath="-94.5" atv="1.8" children="true" linkedscene="" />
+<layer name="num305" style="childtext" parent="hotspot[table305]" type="text"  html="305" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=305, 501, 605, false);"/>
+
+
+	</scene>
+
+	<scene name="scene_005-hall" title="Холл" onstart="" thumburl="panos/005-hall.tiles/thumb.jpg" lat="" lng="" heading="">
+
+		<view hlookat="-138.381" vlookat="-1.325" fovtype="MFOV" fov="120.000" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/005-hall.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/005-hall.tiles/pano_%s.jpg" />
+			<cube url="panos/005-hall.tiles/mobile/pano_%s.jpg" devices="mobile" />
+		</image>
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="-141.631" atv="1.059" linkedscene="scene_006-zal2" />
+		<hotspot name="spot2" style="skin_hotspotstyle" ath="39.862" atv="12.566" linkedscene="scene_003-bar" />
+
+	</scene>
+
+	<scene name="scene_006-zal2" title="Зал 2" onstart="" thumburl="panos/006-zal2.tiles/thumb.jpg" lat="" lng="" heading="">
+
+		<view hlookat="240.340" vlookat="0.310" fovtype="MFOV" fov="120.000" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/006-zal2.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/006-zal2.tiles/pano_%s.jpg" />
+			<cube url="panos/006-zal2.tiles/mobile/pano_%s.jpg" devices="mobile" />
+		</image>
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="-73.148" atv="9.108" linkedscene="scene_008-zal2" />
+		<hotspot name="spot2" style="skin_hotspotstyle" ath="127.479" atv="-1.165" linkedscene="scene_007-wc" />
+		<hotspot name="spot3" style="skin_hotspotstyle" ath="24.792" atv="4.611" linkedscene="scene_005-hall" />
+
+<!-- table 901-->
+<hotspot name="table901" style="table2"  ath="-87.57" atv="7.12" children="true" linkedscene="" />
+<layer name="num901" style="childtext" parent="hotspot[table901]" type="text"  html="901" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=901, 501, 605, false);"/>
+
+<!-- table 902-->
+<hotspot name="table902" style="table2"  ath="-91.84" atv="10.03"  children="true" linkedscene="" />
+<layer name="num902" style="childtext" parent="hotspot[table902]" type="text"  html="902" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=902, 501, 605, false);"/>
+
+<!-- table 903-->
+<hotspot name="table903" style="table2" ath="-96.92" atv="13.14" children="true" linkedscene="" />
+<layer name="num903" style="childtext" parent="hotspot[table903]" type="text"  html="903" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=903, 501, 605, false);"/>
+
+<!-- table 904-->
+<hotspot name="table904" style="table2"  ath="-103.17" atv="16.16" children="true" linkedscene="" />
+<layer name="num904" style="childtext" parent="hotspot[table904]" type="text"  html="904" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=904, 501, 605, false);"/>
+
+<!-- table 905-->
+<hotspot name="table905" style="table2"  ath="-109.69" atv="18.86" children="true" linkedscene="" />
+<layer name="num905" style="childtext" parent="hotspot[table905]" type="text"  html="905" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=905, 501, 605, false);"/>
+
+<!-- table 906-->
+<hotspot name="table906" style="table2" ath="-119.75" atv="21.92" children="true" linkedscene="" />
+<layer name="num906" style="childtext" parent="hotspot[table906]" type="text"  html="906" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=906, 501, 605, false);"/>
+
+<!-- table 907-->
+<hotspot name="table907" style="table2"  ath="-130.24" atv="23.3" children="true" linkedscene="" />
+<layer name="num907" style="childtext" parent="hotspot[table907]" type="text"  html="907" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=907, 501, 605, false);"/>
+
+<!-- table 908-->
+<hotspot name="table908" style="table2" ath="-141.26" atv="24.44" children="true" linkedscene="" />
+<layer name="num908" style="childtext" parent="hotspot[table908]" type="text"  html="908" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=908, 501, 605, false);"/>
+
+<!-- table 909-->
+<hotspot name="table909" style="table2" ath="-151.11" atv="23.57" children="true" linkedscene="" />
+<layer name="num909" style="childtext" parent="hotspot[table909]" type="text"  html="909" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=909, 501, 605, false);"/>
+
+<!-- table 910-->
+<hotspot name="table910" style="table2" ath="-160.41" atv="23.36" children="true" linkedscene="" />
+<layer name="num910" style="childtext" parent="hotspot[table910]" type="text"  html="910" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=910, 501, 605, false);"/>
+
+<!-- table 911-->
+<hotspot name="table911" style="table2" ath="-168.75" atv="22.0" children="true" linkedscene="" />
+<layer name="num911" style="childtext" parent="hotspot[table911]" type="text"  html="911" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=911, 501, 605, false);"/>
+
+<!-- table 912-->
+<hotspot name="table912" style="table2" ath="-177.69" atv="20.08" children="true" linkedscene="" />
+<layer name="num912" style="childtext" parent="hotspot[table912]" type="text"  html="912" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=912, 501, 605, false);"/>
+
+<!-- table 913-->
+<hotspot name="table913" style="table2" ath="174.98" atv="17.7" children="true" linkedscene="" />
+<layer name="num913" style="childtext" parent="hotspot[table913]" type="text"  html="913" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=913, 501, 605, false);"/>
+
+<!-- table 914-->
+<hotspot name="table914" style="table2" ath="169.25" atv="15.56" children="true" linkedscene="" />
+<layer name="num914" style="childtext" parent="hotspot[table914]" type="text"  html="914" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=914, 501, 605, false);"/>
+
+<!-- table 915-->
+<hotspot name="table915" style="table2"  ath="163.5" atv="13.7" children="true" linkedscene="" />
+<layer name="num915" style="childtext" parent="hotspot[table915]" type="text"  html="915" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=915, 501, 605, false);"/>
+
+<!-- table 916-->
+<hotspot name="table916" style="table2"  ath="158.4" atv="11.34" children="true" linkedscene="" />
+<layer name="num916" style="childtext" parent="hotspot[table916]" type="text"  html="916" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=916, 501, 605, false);"/>
+
+<!-- table 917-->
+<hotspot name="table917" style="table2"  ath="153.4" atv="8.8" children="true" linkedscene="" />
+<layer name="num917" style="childtext" parent="hotspot[table917]" type="text"  html="917" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=917, 501, 605, false);"/>
+
+<!-- table 5006-->
+<hotspot name="table5006" style="table2"  ath="160.98" atv="3.63" children="true" linkedscene="" />
+<layer name="num5006" style="childtext" parent="hotspot[table5006]" type="text"  html="5006" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=5006, 501, 605, false);"/>
+
+<!-- table 801-->
+<hotspot name="table801" style="table2"  ath="150.47" atv="4.34" children="true" linkedscene="" />
+<layer name="num801" style="childtext" parent="hotspot[table801]" type="text"  html="801" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=801, 501, 605, false);"/>
+
+<!-- table 802-->
+<hotspot name="table802" style="table2"  ath="143.84" atv="4.63" children="true" linkedscene="" />
+<layer name="num802" style="childtext" parent="hotspot[table802]" type="text"  html="802" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=802, 501, 605, false);"/>
+
+<!-- table 803-->
+<hotspot name="table803" style="table2"  ath="98.89" atv="5.83" children="true" linkedscene="" />
+<layer name="num803" style="childtext" parent="hotspot[table803]" type="text"  html="803" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=803, 501, 605, false);"/>
+
+<!-- table 5001-->
+<hotspot name="table5001" style="table2" ath="-104.13" atv="2.76" children="true" linkedscene="" />
+<layer name="num5001" style="childtext" parent="hotspot[table5001]" type="text"  html="5001" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=5001, 501, 605, false);"/>
+
+<!-- table 5002-->
+<hotspot name="table5002" style="table2" ath="-110.77" atv="4.46" children="true" linkedscene="" />
+<layer name="num5002" style="childtext" parent="hotspot[table5002]" type="text"  html="5002" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=5002, 501, 605, false);"/>
+
+<!-- table 5003-->
+<hotspot name="table5003" style="table2" ath="-118.27" atv="5.46" children="true" linkedscene="" />
+<layer name="num5003" style="childtext" parent="hotspot[table5003]" type="text"  html="5003" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=5003, 501, 605, false);"/>
+
+<!-- table 5004-->
+<hotspot name="table5004" style="table2" ath="-160.17" atv="6.69" children="true" linkedscene="" />
+<layer name="num5004" style="childtext" parent="hotspot[table5004]" type="text"  html="5004" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=5004, 501, 605, false);"/>
+
+<!-- table 5005-->
+<hotspot name="table5005" style="table2" ath="-175.64" atv="5.09" children="true" linkedscene="" />
+<layer name="num5005" style="childtext" parent="hotspot[table5005]" type="text"  html="5005" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=5005, 501, 605, false);"/>
+
+
+	</scene>
+
+	<scene name="scene_007-wc" title="WC" onstart="" thumburl="panos/007-wc.tiles/thumb.jpg" lat="" lng="" heading="">
+
+		<view hlookat="-139.078" vlookat="1.023" fovtype="MFOV" fov="120.000" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/007-wc.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/007-wc.tiles/pano_%s.jpg" />
+			<cube url="panos/007-wc.tiles/mobile/pano_%s.jpg" devices="mobile" />
+		</image>
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="154.488" atv="-2.858" linkedscene="scene_006-zal2" />
+
+	</scene>
+
+	<scene name="scene_008-zal2" title="Зал 2" onstart="" thumburl="panos/008-zal2.tiles/thumb.jpg" lat="" lng="" heading="">
+
+		<view hlookat="259.317" vlookat="-1.935" fovtype="MFOV" fov="120.000" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/008-zal2.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/008-zal2.tiles/pano_%s.jpg" />
+			<cube url="panos/008-zal2.tiles/mobile/pano_%s.jpg" devices="mobile" />
+		</image>
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="-36.156" atv="3.240" linkedscene="scene_006-zal2" />
+
+<!-- table 1006-->
+<hotspot name="table1006" style="table2"  ath="-54.65" atv="13.74" children="true" linkedscene="" />
+<layer name="num1006" style="childtext" parent="hotspot[table1006]" type="text"  html="1006" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=1006, 501, 605, false);"/>
+
+<!-- table 1005-->
+<hotspot name="table1005" style="table2"  ath="-62.43" atv="17.95" children="true" linkedscene="" />
+<layer name="num1005" style="childtext" parent="hotspot[table1005]" type="text"  html="1005" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=1005, 501, 605, false);"/>
+
+<!-- table 1004-->
+<hotspot name="table1004" style="table2"  ath="-69.71" atv="20.96" children="true" linkedscene="" />
+<layer name="num1004" style="childtext" parent="hotspot[table1004]" type="text"  html="1004" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=1004, 501, 605, false);"/>
+
+<!-- table 1003-->
+<hotspot name="table1003" style="table2"  ath="-79.19" atv="24.97" children="true" linkedscene="" />
+<layer name="num1003" style="childtext" parent="hotspot[table1003]" type="text"  html="1003" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=1003, 501, 605, false);"/>
+
+<!-- table 1002-->
+<hotspot name="table1002" style="table2"  ath="-90.87" atv="29.07" children="true" linkedscene="" />
+<layer name="num1002" style="childtext" parent="hotspot[table1002]" type="text"  html="1002" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=1002, 501, 605, false);"/>
+
+<!-- table 1001-->
+<hotspot name="table1001" style="table2"  ath="-110.73" atv="32.25" children="true" linkedscene="" />
+<layer name="num1001" style="childtext" parent="hotspot[table1001]" type="text"  html="1001" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=1006, 501, 605, false);"/>
+
+	<!-- table 901-->
+<hotspot name="table901" style="table2"  ath="63.43" atv="24.25" children="true" linkedscene="" />
+<layer name="num901" style="childtext" parent="hotspot[table901]" type="text"  html="901" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=901, 501, 605, false);"/>
+
+<!-- table 902-->
+<hotspot name="table902" style="table2"  ath="38.84" atv="25.94"  children="true" linkedscene="" />
+<layer name="num902" style="childtext" parent="hotspot[table902]" type="text"  html="902" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=902, 501, 605, false);"/>
+
+<!-- table 903-->
+<hotspot name="table903" style="table2" ath="19.54" atv="24.02" children="true" linkedscene="" />
+<layer name="num903" style="childtext" parent="hotspot[table903]" type="text"  html="903" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=903, 501, 605, false);"/>
+
+<!-- table 904-->
+<hotspot name="table904" style="table2"  ath="3.83" atv="20.44" children="true" linkedscene="" />
+<layer name="num904" style="childtext" parent="hotspot[table904]" type="text"  html="904" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=904, 501, 605, false);"/>
+
+<!-- table 905-->
+<hotspot name="table905" style="table2"  ath="-6.78" atv="16.88" children="true" linkedscene="" />
+<layer name="num905" style="childtext" parent="hotspot[table905]" type="text"  html="905" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=905, 501, 605, false);"/>
+
+<!-- table 906-->
+<hotspot name="table906" style="table2" ath="-13.64" atv="14.35" children="true" linkedscene="" />
+<layer name="num906" style="childtext" parent="hotspot[table906]" type="text"  html="906" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=906, 501, 605, false);"/>
+
+<!-- table 907-->
+<hotspot name="table907" style="table2"  ath="-18.23" atv="10.92" children="true" linkedscene="" />
+<layer name="num907" style="childtext" parent="hotspot[table907]" type="text"  html="907" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=907, 501, 605, false);"/>
+
+<!-- table 908-->
+<hotspot name="table908" style="table2" ath="-21.69" atv="8.47" children="true" linkedscene="" />
+<layer name="num908" style="childtext" parent="hotspot[table908]" type="text"  html="908" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=908, 501, 605, false);"/>
+
+
+<!-- table 701-->
+<hotspot name="table701" style="table2"  ath="-142.15" atv="10.15" children="true" linkedscene="" />
+<layer name="num701" style="childtext" parent="hotspot[table701]" type="text"  html="701" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=701, 501, 605, false);"/>
+
+<!-- table 702-->
+<hotspot name="table702" style="table2"  ath="-130.67" atv="10.60" children="true" linkedscene="" />
+<layer name="num702" style="childtext" parent="hotspot[table702]" type="text"  html="702" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=702, 501, 605, false);"/>
+
+<!-- table 703-->
+<hotspot name="table703" style="table2" ath="-112.69" atv="10.65" children="true" linkedscene="" />
+<layer name="num703" style="childtext" parent="hotspot[table703]" type="text"  html="703" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=703, 501, 605, false);"/>
+
+<!-- table 704-->
+<hotspot name="table704" style="table2"  ath="-95.68" atv="9.72" children="true" linkedscene="" />
+<layer name="num704" style="childtext" parent="hotspot[table704]" type="text"  html="704" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=704, 501, 605, false);"/>
+
+<!-- table 705-->
+<hotspot name="table705" style="table2"  ath="-81.62" atv="7.93" children="true" linkedscene="" />
+<layer name="num705" style="childtext" parent="hotspot[table705]" type="text"  html="705" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=705, 501, 605, false);"/>
+
+<!-- table 602-->
+<hotspot name="table602" style="table2" ath="136.73" atv="17.93" children="true" linkedscene="" />
+<layer name="num602" style="childtext" parent="hotspot[table602]" type="text"  html="602" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=602, 501, 605, false);"/>
+
+<!-- table 601-->
+<hotspot name="table601" style="table2" ath="91.65" atv="10.48" children="true" linkedscene="" />
+<layer name="num601" style="childtext" parent="hotspot[table601]" type="text"  html="601" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=601, 501, 605, false);"/>
+
+<!-- table 5001-->
+<hotspot name="table5001" style="table2" ath="48.19" atv="8.26" children="true" linkedscene="" />
+<layer name="num5001" style="childtext" parent="hotspot[table5001]" type="text"  html="5001" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=5001, 501, 605, false);"/>
+
+<!-- table 5002-->
+<hotspot name="table5002" style="table2" ath="37.15" atv="8.23" children="true" linkedscene="" />
+<layer name="num5002" style="childtext" parent="hotspot[table5002]" type="text"  html="5002" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=5002, 501, 605, false);"/>
+
+<!-- table 5003-->
+<hotspot name="table5003" style="table2" ath="26.61" atv="8.27" children="true" linkedscene="" />
+<layer name="num5003" style="childtext" parent="hotspot[table5003]" type="text"  html="5003" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=5003, 501, 605, false);"/>
+
+<!-- table 5004-->
+<hotspot name="table5004" style="table2" ath="16.96" atv="7.85" children="true" linkedscene="" />
+<layer name="num5004" style="childtext" parent="hotspot[table5004]" type="text"  html="5004" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=5004, 501, 605, false);"/>
+
+<!-- table 5005-->
+<hotspot name="table5005" style="table2" ath="8" atv="7.16" children="true" linkedscene="" />
+<layer name="num5005" style="childtext" parent="hotspot[table5005]" type="text"  html="5005" onclick="popup('iframe', 'https://sempre.moscow/form/', ?table=5005, 501, 605, false);"/>
+
+</scene>
+
+</krpano>

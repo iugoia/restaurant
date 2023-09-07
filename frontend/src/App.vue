@@ -1,15 +1,15 @@
 <template>
-  <Home />
+    <router-view></router-view>
 </template>
 
 <script>
-import Home from "@/views/Home";
 
 export default {
-  name: 'App',
-  components: {
-    Home
-  }
+    name: 'App',
+    beforeRouteEnter(to, from, next) {
+        document.title = to.meta.title;
+        next();
+    }
 }
 </script>
 

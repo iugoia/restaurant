@@ -1,0 +1,40 @@
+@import url('@/assets/global.scss');
+
+header {
+    padding: 16px 0;
+    background: linear-gradient(180deg, rgb(14 0 0 / 70%) 0%, rgb(0 0 0 / 0%) 100%);
+    box-shadow: 0 2px 8px 0 rgb(0 0 0 / 4%);
+    text-transform: uppercase;
+    color: $base-white;
+    position: relative;
+    z-index: 10;
+}
+
+.header_row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.user_nav_list, .nav__add {
+    display: flex;
+}
+
+.user_nav {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.user_nav_item {
+    font-weight: 500;
+
+    &:not(:last-of-type) {
+        margin-right: 22px;
+    }
+}
+
+.nav__add_item:not(:last-of-type) {
+    margin-right: 16px;
+}
