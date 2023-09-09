@@ -1,6 +1,6 @@
 <template>
     <div>
-        <HeaderMain />
+        <header-main></header-main>
         <main>
             <section class="video_sec">
                 <video
@@ -62,12 +62,12 @@
 </template>
 
 <script>
-import HeaderMain from "@/components/Header/Header";
+
 import RouterLinkComponent from "@/components/UI/RouterLink/RouterLinkComponent";
 import SliderMain from "@/components/UI/Slider";
 export default {
     name: "HomePage",
-    components: {SliderMain, RouterLinkComponent, HeaderMain},
+    components: {SliderMain, RouterLinkComponent},
     data() {
         return {
             imageArray1: [
