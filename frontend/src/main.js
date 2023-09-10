@@ -8,7 +8,8 @@ import store from './store';
 
 import HeaderMain from "@/components/Header/Header";
 import RouterLinkComponent from "@/components/UI/RouterLink/RouterLinkComponent";
-import FooterMain from '@/components/Footer/Footer';
+import ContactsMain from "@/components/Contacts/Contacts";
+import FooterMain from "@/components/Footer/Footer";
 import PrimaryInput from "@/components/UI/Input/PrimaryInput";
 import PrimaryCheckbox from "@/components/UI/Checkbox/PrimaryCheckbox";
 
@@ -19,6 +20,7 @@ app
     .use(store)
     .component('HeaderMain', HeaderMain)
     .component('RouterLinkComponent', RouterLinkComponent)
+    .component('ContactsMain', ContactsMain)
     .component('FooterMain', FooterMain)
     .component('PrimaryInput', PrimaryInput)
     .component('PrimaryCheckbox', PrimaryCheckbox)

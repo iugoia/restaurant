@@ -1,6 +1,36 @@
 @import url('@/assets/global.scss');
 
-.footer_list{
-    display: grid;
-    grid-template-columns: 5 span;
+.footer{
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    margin: 0 auto;
+    background-color: #010000;
+    color: #ffff;
+
+    &__container{
+        padding: 15px 150px;
+    }
+
+    &__title{
+        color: #676773;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 13px;
+    }
+
+    &__title, &__politics{
+        text-transform: uppercase;
+    }
+
+    &__politics, &__team{
+        color: #ffff;
+        font-size: 12px;
+        font-weight: 200;
+        line-height: 12px;
+    }
+
+    &__team{
+        margin-top: 16px;
+    }
 }

@@ -58,7 +58,8 @@
                 </div>
             </section>
         </main>
-        <footer-main></footer-main>
+        <ContactsMain />
+        <FooterMain />
     </div>
 </template>
 
@@ -66,10 +67,11 @@
 
 import RouterLinkComponent from "@/components/UI/RouterLink/RouterLinkComponent";
 import SliderMain from "@/components/UI/Slider";
+import ContactsMain from "@/components/Contacts/Contacts";
 import FooterMain from "@/components/Footer/Footer";
 export default {
     name: "HomePage",
-    components: {FooterMain, SliderMain, RouterLinkComponent},
+    components: {FooterMain, SliderMain, RouterLinkComponent, ContactsMain},
     data() {
         return {
             imageArray1: [
