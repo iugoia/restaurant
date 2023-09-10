@@ -3,7 +3,9 @@
         <div class="container">
             <div class="header_row">
                 <div class="header_logo">
-                    <img src="/logo.png" alt="Логотип">
+                    <router-link to="/">
+                        <img src="/logo.png" alt="Логотип">
+                    </router-link>
                 </div>
                 <nav class="user_nav">
                     <ul class="user_nav_list">

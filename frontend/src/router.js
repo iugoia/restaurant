@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router/dist/vue-router";
 import Home from "@/views/HomePage/Home";
-import TourThreeD from "@/views/TourThreeD";
+import AuthPage from "@/views/Authorization/AuthPage";
+import PersonalAcc from "@/views/PersonalAcc";
 
 const routes = [
     {
@@ -10,11 +11,25 @@ const routes = [
             title: "Главная страница"
         }
     },
+    // {
+    //     path: '/3d_tour',
+    //     component: TourThreeD,
+    //     meta: {
+    //         title: "Виртуальный тур"
+    //     }
+    // },
     {
-        path: '/3d_tour',
-        component: TourThreeD,
+        path: '/auth',
+        component: AuthPage,
         meta: {
-            title: "Виртуальный тур"
+            title: "Авторизация"
+        }
+    },
+    {
+        path: '/personal',
+        component: PersonalAcc,
+        meta: {
+            title: "Личный кабинет"
         }
     }
 ];

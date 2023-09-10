@@ -22,10 +22,10 @@
                     <p class="footer_title">Подписывайтесь</p>
                     <div class="footer_socials">
                         <a href="https://t.me/sempre_moscow" class="footer_icon">
-                            <img src="../../../public/img/tg_icon.png" alt="Телеграм">
+<!--                            <img src="../../../public/img/tg_icon.png" alt="Телеграм">-->
                         </a>
                         <a href="https://vk.com/sempre.moscow" class="footer_icon">
-                            <img src="../../../public/img/vk_icon.png" alt="Вконтакте">
+<!--                            <img src="../../../public/img/vk_icon.png" alt="Вконтакте">-->
                         </a>
                     </div>
                 </li>

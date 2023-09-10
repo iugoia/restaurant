@@ -58,6 +58,7 @@
                 </div>
             </section>
         </main>
+        <footer-main></footer-main>
     </div>
 </template>
 
@@ -65,9 +66,10 @@
 
 import RouterLinkComponent from "@/components/UI/RouterLink/RouterLinkComponent";
 import SliderMain from "@/components/UI/Slider";
+import FooterMain from "@/components/Footer/Footer";
 export default {
     name: "HomePage",
-    components: {SliderMain, RouterLinkComponent},
+    components: {FooterMain, SliderMain, RouterLinkComponent},
     data() {
         return {
             imageArray1: [
