@@ -13,6 +13,7 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
+            $user->tokens()->delete();
 
             $token = $user->createToken('token')->plainTextToken;
             return response()->json([
@@ -23,5 +24,13 @@ class AuthController extends Controller
         return response()->json([
             'error' => 'Пользователь не найден'
         ], 401);
+    }
+
+    public function logout()
+    {
+        Auth::user()->tokens()->delete();
+        return response()->json([
+            'message' => 'Вы успешно вышли из системы'
+        ]);
     }
 }

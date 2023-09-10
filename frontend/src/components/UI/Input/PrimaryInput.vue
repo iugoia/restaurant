@@ -58,6 +58,10 @@ export default {
         color: $base-white;
         font-family: "Montserrat";
         padding-right: 30px;
+
+        &::placeholder{
+            color: rgba($base-white, .7);
+        }
     }
 
     .input_icon {

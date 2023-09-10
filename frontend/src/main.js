@@ -2,6 +2,8 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from "@/router";
 import './assets/global.scss';
+import store from './store';
+
 // компоненты
 
 import HeaderMain from "@/components/Header/Header";
@@ -14,6 +16,7 @@ const app = createApp(App)
 
 app
     .use(router)
+    .use(store)
     .component('HeaderMain', HeaderMain)
     .component('RouterLinkComponent', RouterLinkComponent)
     .component('FooterMain', FooterMain)

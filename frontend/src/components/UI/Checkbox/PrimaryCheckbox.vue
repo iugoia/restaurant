@@ -1,7 +1,7 @@
 <template>
     <label>
         <input type="checkbox" v-bind="$attrs" v-model="checkboxValue">
-        <span>{{title}}</span>
+        <span>{{ title }}</span>
     </label>
 </template>
 
@@ -31,5 +31,7 @@ export default {
 </script>
 
 <style scoped>
-
+    span {
+        margin-left: 10px;
+    }
 </style>

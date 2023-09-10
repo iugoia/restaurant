@@ -2,6 +2,8 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\AccessJson;
+use App\Http\Middleware\VerifyCsrfToken;
 use Fruitcake\Cors\HandleCors;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 

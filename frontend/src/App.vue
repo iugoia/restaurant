@@ -5,11 +5,7 @@
 <script>
 
 export default {
-    name: 'App',
-    beforeRouteEnter(to, from, next) {
-        document.title = to.meta.title;
-        next();
-    }
+    name: 'App'
 }
 </script>
 
