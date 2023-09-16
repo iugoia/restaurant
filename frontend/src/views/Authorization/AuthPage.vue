@@ -27,9 +27,9 @@
                             >
                             </primary-input>
                         </label>
-                        <primary-checkbox title="Запомнить меня" v-model="checkboxValue"></primary-checkbox>
+                        <primary-checkbox title="Запомнить меня" name="remember_token" v-model="remember"></primary-checkbox>
                         <primary-button class="button-primary">Войти</primary-button>
-                        <div class="error" v-if="error">{{error}}</div>
+                        <div class="error" style="text-align: center; margin-top: 10px;" v-if="error">{{error}}</div>
                     </form>
                 </div>
             </div>
@@ -41,6 +41,8 @@
 </template>
 
 <script>
+/* eslint-disable */
+
 import PrimaryCheckbox from "@/components/UI/Checkbox/PrimaryCheckbox";
 import axios from '@/axios';
 import PrimaryButton from "@/components/UI/PrimaryButton/PrimaryButton";
@@ -53,41 +55,39 @@ export default {
             loginValue: "",
             passwordValue: "",
             titleCheckbox: "Запомнить меня",
-            checkboxValue: false,
+            remember: false,
             error: null,
         }
     },
     methods: {
         async login() {
-            try{
-                axios.get('/sanctum/csrf-cookie')
-                    .then(() => {
-                        axios.post('/api/auth', {
-                            login: this.loginValue,
-                            password: this.passwordValue
-                        })
-                            .then(r => {
-                                if (r.status === 200){
-                                    this.$router.push('/personal');
-                                }
-                            })
-                            .catch(error => {
-                                if (error.response.status === 401) {
-                                    this.error = "Пользователь не найден";
-                                }
-                                console.log(error);
-                            })
-                    })
-            }
-            catch (error) {
-                console.log(error);
+            try {
+                await axios.get('/sanctum/csrf-cookie', {
+                    withCredentials: true
+                });
+                const response = await axios.post('api/login', {
+                    login: this.loginValue,
+                    password: this.passwordValue,
+                    remember: this.remember
+                });
+                if (response.status === 200){
+                    localStorage.setItem('token', response.data['token']);
+                    axios.defaults.headers.common['Authorization'] = `Bearer ${response.data['token']}`;
+                    this.$router.push('/personal');
+                } else {
+                    console.log(response);
+                }
+            } catch (error) {
+                if (error.response && error.response.status === 401){
+                    this.error = "Пользователь не найден";
+                } else {
+                    this.error = "Произошла ошибка. Попробуйте позже";
+                }
             }
         }
     },
     mounted() {
-        axios.get('/sanctum/csrf-cookie', {
-            withCredentials: true
-        })
+
     }
 }
 </script>

@@ -1,3 +1,4 @@
+/* eslint-disable */
 // import { createRouter, createWebHistory } from "vue-router/dist/vue-router";
 import Home from "@/views/HomePage/Home";
 import AuthPage from "@/views/Authorization/AuthPage";
@@ -34,6 +35,19 @@ const router = createRouter({
             ]
         }
     ]
+});
+
+router.beforeEach((to, from, next) => {
+    if (to.matched.some(record => record.meta.auth)){
+        var token = localStorage.getItem('token');
+        if (!token){
+            next({path: '/auth'})
+        } else {
+            next();
+        }
+    } else {
+        next();
+    }
 });
 
 export default router;

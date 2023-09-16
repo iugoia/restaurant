@@ -62,4 +62,11 @@ return [
         'encrypt_cookies' => App\Http\Middleware\EncryptCookies::class,
     ],
 
+    'options' => [
+        'same_site' => 'lax',
+    ],
+
+    'lifetime' => 120,
+    'expire_on_close' => false
+
 ];

@@ -10,14 +10,15 @@ class AuthController extends Controller
     public function auth(Request $request)
     {
         $credentials = $request->only(['login', 'password']);
+        $remember = $request->input('remember');
 
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt($credentials, $remember)) {
             $user = Auth::user();
             $user->tokens()->delete();
 
             $token = $user->createToken('token')->plainTextToken;
             return response()->json([
-                'token' => $token
+                'token' => $token,
             ]);
         }
 
